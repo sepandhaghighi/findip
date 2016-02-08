@@ -3,7 +3,6 @@ import subprocess as sub
 import string
 import datetime
 import sys
-
 def ip_filter(i_list):
     temp_list=[]
     for i in range(len(i_list)):
@@ -34,19 +33,23 @@ def find(mask="192.168.166.",mode="manual",iplist=[],range_min=1,range_max=255):
                     print("IP : ",mask+str(i),"Is available but it is not ssh server")
                 else:
                     print("IP : ",mask+str(i),"Is not available")
+            input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",mask+str(i),"Is SSH Server")
             log_file.write("IP : "+mask+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
+            input("Press Any Key To Exit")
     else:
         try:
             for i in iplist:
                 ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
                 print("IP : ",str(i),"Is available but it is not ssh server")
+            input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",str(i),"Is SSH Server")
             log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
+            input("Press Any Key To Exit")
             
         
 if __name__=="__main__":
@@ -57,7 +60,7 @@ if __name__=="__main__":
         sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     if inp==1:
-        sub.Popen("ping "+my_ip,shell=True)
+        sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
         response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
         output=str(list(response.communicate())[0])
         ip_list=search_ip(output)
