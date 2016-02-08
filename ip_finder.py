@@ -2,6 +2,8 @@ import socket
 import subprocess as sub
 import string
 import datetime
+import sys
+
 def ip_filter(i_list):
     temp_list=[]
     for i in range(len(i_list)):
@@ -50,6 +52,9 @@ def find(mask="192.168.166.",mode="manual",iplist=[],range_min=1,range_max=255):
 if __name__=="__main__":
     dic=list(string.digits+".")
     my_ip=socket.gethostbyname(socket.gethostname())
+    if my_ip=="127.0.0.1":
+        print("Problem In Netwrok Connection")
+        sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     if inp==1:
         sub.Popen("ping "+my_ip,shell=True)
