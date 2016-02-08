@@ -1,9 +1,10 @@
-import socket
-import subprocess as sub
+import socket #  Added For Finding Host IP
+import subprocess as sub # Added For Run Command By CMD
 import string
 import datetime
-import sys
-def ip_filter(i_list):
+import sys # For Exit
+def ip_filter(i_list): # This Function Get A List Of IPs and Split IP
+    '''((list)->list'''
     temp_list=[]
     for i in range(len(i_list)):
         for j in range(len(i_list[i])):
@@ -11,7 +12,8 @@ def ip_filter(i_list):
                 temp_list.append(i_list[i][:j])
                 break
     return temp_list
-def search_ip(output):
+def search_ip(output): # This Function Get A String As Input ( ARP Command Output) and Find For Local IPs
+    '''(str)->list'''
     index=0
     ip_list=[]
     while(True):
@@ -22,7 +24,7 @@ def search_ip(output):
         else:
             index=index+16
     return ip_list
-def find(mask="192.168.166.",mode="manual",iplist=[],range_min=1,range_max=255):
+def find(mask="192.168.166.",mode="manual",iplist=[],range_min=1,range_max=255): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
