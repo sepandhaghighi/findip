@@ -45,7 +45,7 @@ def find(mask="192.168.166.",mode="manual",iplist=[],range_min=1,range_max=255):
         try:
             for i in iplist:
                 ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                print("IP : ",str(i),"Is available but it is not ssh server")
+                print("IP : ",str(i)," Is available but it is not ssh server")
             input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",str(i),"Is SSH Server")
