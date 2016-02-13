@@ -60,6 +60,11 @@ if __name__=="__main__":
     if my_ip=="127.0.0.1":
         print("Problem In Netwrok Connection")
         sys.exit()
+    ssh_test=sub.Popen("ssh",stdout=sub.PIPE,stderr=sub.PIPE,shell=True)
+    ssh_result=str(list(ssh_test.communicate())[1])
+    if ssh_result.find("is not recognized")!=-1:
+        print("Please First Install Open SSH")
+        sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     if inp==1:
         sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
