@@ -49,7 +49,9 @@ def find(mask="192.168.166.",mode="manual",iplist=[],range_min=0,range_max=254):
     else:
         try:
             for i in iplist:
-                ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=False)
+                sub.CREATE_NEW_CONSOLE
+                sub.CREATE_NEW_PROCESS_GROUP
+                ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
                 print("IP : ",str(i)," Is available but it is not ssh server")
             input("Press Any Key To Exit")
         except sub.TimeoutExpired:
@@ -71,20 +73,20 @@ if __name__=="__main__":
     if ssh_result.find("is not recognized")!=-1:
         print("Please First Install Open SSH")
         sys.exit()
-    inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
-    print("Please Wait : ")
+    #inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
+    print("Please Wait : Scan IPs . . . ")
     time_1=timeit.default_timer()
-    if inp==1:
-        sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        output=str(list(response.communicate())[0])
-        ip_list=search_ip(output)
-        ip_list=ip_filter(ip_list)
-        find(mode="ARP",iplist=ip_list)
-        time_2=timeit.default_timer()
-    else:
-        find()
-        time_2=timeit.default_timer()
+    #if inp==1:
+      #  sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
+      #  response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
+      #  output=str(list(response.communicate())[0])
+      #  ip_list=search_ip(output)
+      #  ip_list=ip_filter(ip_list)
+      #  find(mode="ARP",iplist=ip_list)
+      #  time_2=timeit.default_timer()
+    #else:
+    find()
+    time_2=timeit.default_timer()
         #get_mask=input("Please Enter Mask :")
         #range_max_input=int(input("Please Enter Range Max : "))
         #range_min_input=int(input("Please Enter Range Min : "))
@@ -99,7 +101,7 @@ if __name__=="__main__":
          #   if range_max_input>range_min_input and range_max_input<256:
           #      find(range_max=range_max_input,mode="manual",range_min=range_min_input)
            # else:
-    print("Scan Time :",str((time_2-time_1))," sec")
+    print("Scan Time :",str((time_2-time_1)/60)," min")
     input("Press Any Key To Exit")
                 
         
