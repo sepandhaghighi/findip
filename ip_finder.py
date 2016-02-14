@@ -5,8 +5,9 @@ import datetime
 import sys # For Exit
 import multiprocessing as mu # for multtiprocessing
 import timeit
+mask="192.168.166."
 def ping(i): # ping function
-    output=str(list(sub.Popen("ping "+"192.168.166."+str(i),stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
+    output=str(list(sub.Popen("ping "+mask+str(i),stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
     return output
 def ip_filter(i_list): # This Function Get A List Of IPs and Split IP
     '''((list)->list'''
@@ -29,12 +30,12 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
         else:
             index=index+16
     return ip_list
-def find(mask="192.168.166.",mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
+def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
             ip_list=[]
-            p=mu.Pool(70) # for multiprocessing
+            p=mu.Pool(100) # for multiprocessing
             result=p.map(ping,list(range(range_min,range_max))) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
@@ -73,34 +74,35 @@ if __name__=="__main__":
     if ssh_result.find("is not recognized")!=-1:
         print("Please First Install Open SSH")
         sys.exit()
-    #inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
+    inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     print("Please Wait : Scan IPs . . . ")
     time_1=timeit.default_timer()
-    #if inp==1:
-      #  sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-      #  response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-      #  output=str(list(response.communicate())[0])
-      #  ip_list=search_ip(output)
-      #  ip_list=ip_filter(ip_list)
-      #  find(mode="ARP",iplist=ip_list)
-      #  time_2=timeit.default_timer()
-    #else:
-    find()
-    time_2=timeit.default_timer()
-        #get_mask=input("Please Enter Mask :")
-        #range_max_input=int(input("Please Enter Range Max : "))
-        #range_min_input=int(input("Please Enter Range Min : "))
-        #if get_mask.find("192.")!=-1 and get_mask.find("168.")!=-1:
-         #   if get_mask[-1]!=".":
-          #      get_mask=get_mask+"."
-           # if range_max_input>range_min_input and range_max_input<256:
-            #    find(mask=get_mask,mode="manual",range_max=range_max_input,range_min=range_min_input)
-            #else:
-             #   find(mask=get_mask,mode="manual")
-        #else:
-         #   if range_max_input>range_min_input and range_max_input<256:
-          #      find(range_max=range_max_input,mode="manual",range_min=range_min_input)
-           # else:
+    if inp==1:
+        sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
+        response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
+        output=str(list(response.communicate())[0])
+        ip_list=search_ip(output)
+        ip_list=ip_filter(ip_list)
+        find(mode="ARP",iplist=ip_list)
+        time_2=timeit.default_timer()
+    else:
+        
+        time_2=timeit.default_timer()
+        mask=input("Please Enter Mask :")
+        range_max_input=int(input("Please Enter Range Max : "))
+        range_min_input=int(input("Please Enter Range Min : "))
+        if mask.find("192.")!=-1 and mask.find("168.")!=-1:
+            if mask[-1]!=".":
+                mask=mask+"."
+            if range_max_input>range_min_input and range_max_input<256:
+                find(mode="manual",range_max=range_max_input,range_min=range_min_input)
+            else:
+                find(mode="manual")
+        else:
+            if range_max_input>range_min_input and range_max_input<256:
+                find(range_max=range_max_input,mode="manual",range_min=range_min_input)
+            else:
+                find()
     print("Scan Time :",str((time_2-time_1)/60)," min")
     input("Press Any Key To Exit")
                 
