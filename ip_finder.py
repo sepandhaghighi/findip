@@ -4,8 +4,9 @@ import string
 import datetime
 import sys # For Exit
 import multiprocessing as mu # for multtiprocessing
+import timeit
 def ping(i): # ping function
-    output=str(list(sub.Popen("ping "+"192.168.1."+str(i),stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
+    output=str(list(sub.Popen("ping "+"192.168.166."+str(i),stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
     return output
 def ip_filter(i_list): # This Function Get A List Of IPs and Split IP
     '''((list)->list'''
@@ -28,12 +29,12 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
         else:
             index=index+16
     return ip_list
-def find(mask="192.168.1.",mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
+def find(mask="192.168.166.",mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
             ip_list=[]
-            p=mu.Pool(100) # for multiprocessing
+            p=mu.Pool(70) # for multiprocessing
             result=p.map(ping,list(range(range_min,range_max))) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
@@ -41,26 +42,24 @@ def find(mask="192.168.1.",mode="manual",iplist=[],range_min=0,range_max=254): #
                     print("IP : ",mask+str(result.index(output)+range_min),"Is available but it is not ssh server")
                 else:
                     print("IP : ",mask+str(result.index(output)+range_min),"Is not available")
-            input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",mask+str(result.index(output)+range_min),"Is SSH Server")
             log_file.write("IP : "+mask+str(result.index(output)+range_min)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-            input("Press Any Key To Exit")
     else:
         try:
             for i in iplist:
-                ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
+                ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=False)
                 print("IP : ",str(i)," Is available but it is not ssh server")
             input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",str(i),"Is SSH Server")
             log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-            input("Press Any Key To Exit")
             
         
 if __name__=="__main__":
+    mu.freeze_support()
     dic=list(string.digits+".")
     my_ip=socket.gethostbyname(socket.gethostname())
     if my_ip=="127.0.0.1":
@@ -74,6 +73,7 @@ if __name__=="__main__":
         sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     print("Please Wait : ")
+    time_1=timeit.default_timer()
     if inp==1:
         sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
         response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
@@ -81,8 +81,10 @@ if __name__=="__main__":
         ip_list=search_ip(output)
         ip_list=ip_filter(ip_list)
         find(mode="ARP",iplist=ip_list)
+        time_2=timeit.default_timer()
     else:
         find()
+        time_2=timeit.default_timer()
         #get_mask=input("Please Enter Mask :")
         #range_max_input=int(input("Please Enter Range Max : "))
         #range_min_input=int(input("Please Enter Range Min : "))
@@ -97,6 +99,8 @@ if __name__=="__main__":
          #   if range_max_input>range_min_input and range_max_input<256:
           #      find(range_max=range_max_input,mode="manual",range_min=range_min_input)
            # else:
+    print("Scan Time :",str((time_2-time_1))," sec")
+    input("Press Any Key To Exit")
                 
         
         
