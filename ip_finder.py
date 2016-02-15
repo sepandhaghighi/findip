@@ -30,13 +30,13 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
             index=index+16
     return ip_list
 def string_conv(i):
-    return mask+str(i)
+    return mask+str(i)    
 def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
             ip_list=list(map(string_conv,list(range(range_min,range_max))))
-            p=mu.Pool(100) # for multiprocessing
+            p=mu.Pool(60) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
@@ -48,18 +48,18 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
             print("IP : ",ip_list[result.index(output)],"Is SSH Server")
             log_file.write("IP : "+ip_list[result.index(output)]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-    else:
+    elif mode=="ARP":
         try:
             for i in iplist:
                 sub.CREATE_NEW_CONSOLE
                 sub.CREATE_NEW_PROCESS_GROUP
                 ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
                 print("IP : ",str(i)," Is available but it is not ssh server")
-            input("Press Any Key To Exit")
         except sub.TimeoutExpired:
             print("IP : ",str(i),"Is SSH Server")
             log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
+    
             
         
 if __name__=="__main__":
@@ -77,9 +77,9 @@ if __name__=="__main__":
         print("Please First Install Open SSH")
         sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
-    print("Please Wait : Scan IPs . . . ")
     time_1=time.perf_counter()
     if inp==1:
+        print("Please Wait : Scan IPs . . . ")
         sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
         response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
         output=str(list(response.communicate())[0])
@@ -88,11 +88,14 @@ if __name__=="__main__":
         find(mode="ARP",iplist=ip_list)
         time_2=time.perf_counter()
     else:
-        
-        time_2=time.perf_counter()
         get_mask=input("Please Enter Mask :")
-        range_max_input=int(input("Please Enter Range Max : "))
-        range_min_input=int(input("Please Enter Range Min : "))
+        try:
+            range_max_input=int(input("Please Enter Range Max : "))
+            range_min_input=int(input("Please Enter Range Min : "))
+        except ValueError: # If User Ignore Input Step
+            range_max_input=0
+            range_min_input=0
+        print("Please Wait : Scan IPs . . . ")
         if get_mask.find("192.")!=-1 and get_mask.find("168.")!=-1:
             if get_mask[-1]!=".":
                 get_mask=get_mask+"."
@@ -101,7 +104,8 @@ if __name__=="__main__":
             find(range_max=range_max_input,range_min=range_min_input)
         else:
             find()
-    print("Scan Time :",str((time_2-time_1))," sec")
+        time_2=time.perf_counter()
+    print("Scan Time :",str((time_2-time_1)/60)," min")
     input("Press Any Key To Exit")
                 
         
