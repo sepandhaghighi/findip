@@ -36,7 +36,7 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
     if mode=="manual":
         try:
             ip_list=list(map(string_conv,list(range(range_min,range_max))))
-            p=mu.Pool(60) # for multiprocessing
+            p=mu.Pool(mu.cpu_count()*30) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
