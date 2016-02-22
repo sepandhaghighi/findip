@@ -66,6 +66,7 @@ if __name__=="__main__":
     mask="192.168.166."
     mu.freeze_support()
     dic=list(string.digits+".")
+    print("Running On Netmask: " + mask)
     my_ip=socket.gethostbyname(socket.gethostname())
     if my_ip=="127.0.0.1":
         print("Problem In Netwrok Connection")
