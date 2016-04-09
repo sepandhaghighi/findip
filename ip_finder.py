@@ -45,9 +45,12 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
                 else:
                     print("IP : ",ip_list[result.index(output)],"Is not available")
         except sub.TimeoutExpired:
-            print("IP : ",ip_list[result.index(output)],"Is SSH Server")
-            log_file.write("IP : "+ip_list[result.index(output)]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
+            ssh_find_index=result.index(output)
+            for l in range(15):
+                print("IP : ",ip_list[ssh_find_index],"Is SSH Server")
+            log_file.write("IP : "+ip_list[ssh_find_index]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
+            find(mode="manual",iplist=[],range_min=ssh_find_index+1,range_max=255)
     elif mode=="ARP":
         try:
             for i in iplist:
@@ -56,9 +59,11 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
                 ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
                 print("IP : ",str(i)," Is available but it is not ssh server")
         except sub.TimeoutExpired:
-            print("IP : ",str(i),"Is SSH Server")
+            for k in range(15):
+                print("IP : ",str(i),"Is SSH Server")
             log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
+            
     
             
         
@@ -79,38 +84,11 @@ if __name__=="__main__":
         print("Please First Install Open SSH (Press Any Key To Exit)")
         input()
         sys.exit()
-    inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     time_1=time.perf_counter()
-    if inp==1:
-        print("Please Wait : Scan IPs . . . ")
-        sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        output=str(list(response.communicate())[0])
-        ip_list=search_ip(output)
-        ip_list=ip_filter(ip_list)
-        find(mode="ARP",iplist=ip_list)
-        time_2=time.perf_counter()
-    else:
-        get_mask=input("Please Enter Mask :")
-        try:
-            range_max_input=int(input("Please Enter Range Max : "))
-            range_min_input=int(input("Please Enter Range Min : "))
-        except ValueError: # If User Ignore Input Step
-            range_max_input=0
-            range_min_input=0
-        print("Please Wait : Scan IPs . . . ")
-        if get_mask.find("192.")!=-1 and get_mask.find("168.")!=-1:
-            if get_mask[-1]!=".":
-                get_mask=get_mask+"."
-            mask=get_mask
-        if range_max_input>range_min_input and range_max_input<256:
-            find(range_max=range_max_input,range_min=range_min_input)
-        else:
-            find()
-        time_2=time.perf_counter()
+    mask="192.168.166."
+    print("Please Wait : Scan IPs . . . ")
+    find()
+    time_2=time.perf_counter()
     print("Scan Time :",str((time_2-time_1)/60)," min")
     input("Press Any Key To Exit")
-                
-        
-        
         
