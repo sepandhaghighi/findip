@@ -36,7 +36,7 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
     if mode=="manual":
         try:
             ip_list=list(map(string_conv,list(range(range_min,range_max))))
-            p=mu.Pool(mu.cpu_count()*30) # for multiprocessing
+            p=mu.Pool(mu.cpu_count()+100) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
@@ -69,13 +69,15 @@ if __name__=="__main__":
     print("Running On Netmask: " + mask)
     my_ip=socket.gethostbyname(socket.gethostname())
     if my_ip=="127.0.0.1":
-        print("Problem In Netwrok Connection")
+        print("Problem In Netwrok Connection ( Please Check )")
+        input()
         sys.exit()
     ssh_test=sub.Popen("ssh",stdout=sub.PIPE,stderr=sub.PIPE,shell=True)
     ssh_result=str(list(ssh_test.communicate())[1])
     #print(ssh_result)
     if ssh_result.find("is not recognized")!=-1:
-        print("Please First Install Open SSH")
+        print("Please First Install Open SSH (Press Any Key To Exit)")
+        input()
         sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     time_1=time.perf_counter()
