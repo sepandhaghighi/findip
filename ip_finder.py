@@ -48,9 +48,10 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
             ssh_find_index=result.index(output)
             for l in range(15):
                 print("IP : ",ip_list[ssh_find_index],"Is SSH Server")
+            rec_flag=ip_list[ssh_find_index].split(".")[-1]
             log_file.write("IP : "+ip_list[ssh_find_index]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-            find(mode="manual",iplist=[],range_min=ssh_find_index+1,range_max=255)
+            find(mode="manual",iplist=[],range_min=int(rec_flag)+1,range_max=255)
     elif mode=="ARP":
         try:
             for i in iplist:
