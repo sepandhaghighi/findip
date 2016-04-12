@@ -52,7 +52,7 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254,server_counter=0): # 
                 print("IP : ",ip_list[ssh_find_index],"Is SSH Server*****+++++---")
             server_counter=server_counter+1
             rec_flag=int(ip_list[ssh_find_index].split(".")[-1])
-            log_file.write("IP : "+ip_list[ssh_find_index]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
+            log_file.write("IP : "+ip_list[ssh_find_index]+" Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
             p.close()
             p.terminate()
