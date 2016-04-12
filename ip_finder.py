@@ -31,12 +31,12 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
     return ip_list
 def string_conv(i):
     return mask+str(i)    
-def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
+def find(mode="manual",iplist=[],range_min=0,range_max=254,server_counter=0): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
             ip_list=list(map(string_conv,list(range(range_min,range_max))))
-            p=mu.Pool(mu.cpu_count()+100) # for multiprocessing
+            p=mu.Pool(mu.cpu_count()+60) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
@@ -44,14 +44,20 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
                     print("IP : ",ip_list[result.index(output)],"Is available but it is not ssh server")
                 else:
                     print("IP : ",ip_list[result.index(output)],"Is not available")
+            p.close()
+            p.terminate()
         except sub.TimeoutExpired:
             ssh_find_index=result.index(output)
             for l in range(15):
-                print("IP : ",ip_list[ssh_find_index],"Is SSH Server")
-            rec_flag=ip_list[ssh_find_index].split(".")[-1]
+                print("IP : ",ip_list[ssh_find_index],"Is SSH Server*****+++++---")
+            server_counter=server_counter+1
+            rec_flag=int(ip_list[ssh_find_index].split(".")[-1])
             log_file.write("IP : "+ip_list[ssh_find_index]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-            find(mode="manual",iplist=[],range_min=int(rec_flag)+1,range_max=255)
+            p.close()
+            p.terminate()
+            if server_counter<=4 and range_min<=253:
+                find(mode="manual",iplist=[],range_min=rec_flag+1,range_max=255,server_counter=server_counter+1)
     elif mode=="ARP":
         try:
             for i in iplist:
@@ -69,11 +75,17 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
             
         
 if __name__=="__main__":
+    server_counter=0
     mask="192.168.166."
     mu.freeze_support()
     dic=list(string.digits+".")
     print("Running On Netmask: " + mask)
     my_ip=socket.gethostbyname(socket.gethostname())
+    my_ip_mask=int(my_ip.split(".")[-2])
+    if my_ip_mask!=166:
+        print("Location : Out Of Lab")
+    else:
+        print("Location : In Lab")
     if my_ip=="127.0.0.1":
         print("Problem In Netwrok Connection ( Please Check )")
         input()
