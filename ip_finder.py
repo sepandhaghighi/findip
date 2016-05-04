@@ -6,7 +6,7 @@ import sys # For Exit
 import multiprocessing as mu # for multtiprocessing
 import time
 def ping(i): # ping function
-    output=str(list(sub.Popen("ping "+i,stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
+    output=str(list(sub.Popen("ping "+i+" -c 4",stdout=sub.PIPE,stderr=sub.PIPE,shell=True).communicate())[0])
     return output
 def ip_filter(i_list): # This Function Get A List Of IPs and Split IP
     '''((list)->list'''
@@ -39,9 +39,15 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
             p=mu.Pool(mu.cpu_count()+100) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
-                if output.find("timed out")==-1 and output.find("unreachable")==-1:
-                    ssh_response=sub.call("ssh "+ip_list[result.index(output)],stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                    print("IP : ",ip_list[result.index(output)],"Is available but it is not ssh server")
+                if output.find("Unreachable")==-1:
+                    ssh_response=sub.Popen("ssh "+ip_list[result.index(output)],stderr=sub.PIPE,shell=True).communicate()#timeout = 30
+                    out = str(list(ssh_response))
+                    if out.find("timed out")==-1 and out.find("refused")==-1:
+                        print("IP : ",ip_list[result.index(output)],"Is SSH Server")
+                        log_file.write("IP : "+ip_list[result.index(output)]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
+                        log_file.close();
+                    else:
+                        print("IP : ",ip_list[result.index(output)],"Is available but it is not ssh server")
                 else:
                     print("IP : ",ip_list[result.index(output)],"Is not available")
         except sub.TimeoutExpired:
@@ -80,7 +86,7 @@ if __name__=="__main__":
         input()
         sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
-    time_1=time.perf_counter()
+    time_1=time.time()
     if inp==1:
         print("Please Wait : Scan IPs . . . ")
         sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
@@ -89,7 +95,6 @@ if __name__=="__main__":
         ip_list=search_ip(output)
         ip_list=ip_filter(ip_list)
         find(mode="ARP",iplist=ip_list)
-        time_2=time.perf_counter()
     else:
         get_mask=input("Please Enter Mask :")
         try:
@@ -107,10 +112,7 @@ if __name__=="__main__":
             find(range_max=range_max_input,range_min=range_min_input)
         else:
             find()
-        time_2=time.perf_counter()
+
+    time_2=time.time()
     print("Scan Time :",str((time_2-time_1)/60)," min")
-    input("Press Any Key To Exit")
-                
-        
-        
-        
+    input("Press Any Key To Exit") 
