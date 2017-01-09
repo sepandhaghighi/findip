@@ -31,11 +31,11 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
     return ip_list
 def string_conv(i):
     return mask+str(i)    
-def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
+def find(mode="manual",iplist=None,range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
         try:
-            ip_list=list(map(string_conv,list(range(range_min,range_max))))
+            ip_list=list(map(string_conv,list(range(range_min,range_max+1))))
             p=mu.Pool(mu.cpu_count()+100) # for multiprocessing
             result=p.map(ping,ip_list) # result of pings
             for output in result:
@@ -54,14 +54,11 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
                 sub.CREATE_NEW_CONSOLE
                 sub.CREATE_NEW_PROCESS_GROUP
                 ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                print("IP : ",str(i)," Is available but it is not ssh server")
+                print("IP : ",str(i)," Is available")
         except sub.TimeoutExpired:
             print("IP : ",str(i),"Is SSH Server")
             log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
             log_file.close()
-    
-            
-        
 if __name__=="__main__":
     mask="192.168.166."
     mu.freeze_support()
