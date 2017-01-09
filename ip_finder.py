@@ -41,7 +41,7 @@ def find(mode="manual",iplist=[],range_min=0,range_max=254): # This Function Pin
             for output in result:
                 if output.find("timed out")==-1 and output.find("unreachable")==-1:
                     #ssh_response=sub.call("ssh "+ip_list[result.index(output)],stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                    print("IP : ",ip_list[result.index(output)],"Is available but it is not ssh server")
+                    print("IP : ",ip_list[result.index(output)],"Is available")
                 else:
                     print("IP : ",ip_list[result.index(output)],"Is not available")
         except sub.TimeoutExpired:
@@ -75,10 +75,6 @@ if __name__=="__main__":
     ssh_test=sub.Popen("ssh",stdout=sub.PIPE,stderr=sub.PIPE,shell=True)
     ssh_result=str(list(ssh_test.communicate())[1])
     #print(ssh_result)
-    if ssh_result.find("is not recognized")!=-1:
-        print("Please First Install Open SSH (Press Any Key To Exit)")
-        input()
-        sys.exit()
     inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
     time_1=time.perf_counter()
     if inp==1:
