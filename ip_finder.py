@@ -30,35 +30,41 @@ def search_ip(output): # This Function Get A String As Input ( ARP Command Outpu
             index=index+16
     return ip_list
 def string_conv(i):
-    return mask+str(i)    
-def find(mode="manual",iplist=None,range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
+    return mask+str(i)
+def ARP(my_ip):
+    sub.Popen("ping " + my_ip, stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
+    response = sub.Popen("arp -a", stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
+    output = str(list(response.communicate())[0])
+    ip_list = search_ip(output)
+    ip_list = ip_filter(ip_list)
+    for i in ip_list:
+        print("IP : ", i, "Is  available")
+def Manual(range_min,range_max,file):
+    try:
+        ip_list = list(map(string_conv, list(range(range_min, range_max + 1))))
+        p = mu.Pool(mu.cpu_count() + 100)  # for multiprocessing
+        result = p.map(ping, ip_list)  # result of pings
+        for output in result:
+            if output.find("timed out") == -1 and output.find("unreachable") == -1:
+                # ssh_response=sub.call("ssh "+ip_list[result.index(output)],stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
+                print("IP : ", ip_list[result.index(output)], "Is available")
+                file.write("IP : "+ ip_list[result.index(output)]+ " Is available\n")
+            else:
+                print("IP : ", ip_list[result.index(output)], "Is not available")
+                file.write("IP : "+ ip_list[result.index(output)]+ " Is not available\n")
+    except Exception as e:
+        if file.closed==False:
+            file.close()
+        print(e)
+
+def find(mode="manual",my_ip="0.0.0.0",range_min=0,range_max=254): # This Function Ping And SSH IPs to find SSH Server
     log_file=open("log_file.txt","a")
     if mode=="manual":
-        try:
-            ip_list=list(map(string_conv,list(range(range_min,range_max+1))))
-            p=mu.Pool(mu.cpu_count()+100) # for multiprocessing
-            result=p.map(ping,ip_list) # result of pings
-            for output in result:
-                if output.find("timed out")==-1 and output.find("unreachable")==-1:
-                    #ssh_response=sub.call("ssh "+ip_list[result.index(output)],stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                    print("IP : ",ip_list[result.index(output)],"Is available")
-                else:
-                    print("IP : ",ip_list[result.index(output)],"Is not available")
-        except sub.TimeoutExpired:
-            print("IP : ",ip_list[result.index(output)],"Is SSH Server")
-            log_file.write("IP : "+ip_list[result.index(output)]+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
-            log_file.close()
+        Manual(range_max=range_max,range_min=range_min,file=log_file)
+        log_file.close()
     elif mode=="ARP":
-        try:
-            for i in iplist:
-                sub.CREATE_NEW_CONSOLE
-                sub.CREATE_NEW_PROCESS_GROUP
-                ssh_response=sub.call("ssh "+str(i),stdout=sub.PIPE,stderr=sub.PIPE,timeout=30,shell=True)
-                print("IP : ",str(i)," Is available")
-        except sub.TimeoutExpired:
-            print("IP : ",str(i),"Is SSH Server")
-            log_file.write("IP : "+str(i)+"Is SSH Server  "+str(datetime.datetime.today())+"\n")
-            log_file.close()
+        ARP(my_ip)
+
 if __name__=="__main__":
     mask="192.168.166."
     mu.freeze_support()
@@ -76,12 +82,7 @@ if __name__=="__main__":
     time_1=time.perf_counter()
     if inp==1:
         print("Please Wait : Scan IPs . . . ")
-        sub.Popen("ping "+my_ip,stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        response=sub.Popen("arp -a",stdout=sub.PIPE ,stderr=sub.PIPE,shell=True)
-        output=str(list(response.communicate())[0])
-        ip_list=search_ip(output)
-        ip_list=ip_filter(ip_list)
-        find(mode="ARP",iplist=ip_list)
+        find(mode="ARP",my_ip=my_ip)
         time_2=time.perf_counter()
     else:
         get_mask=input("Please Enter Mask :")
