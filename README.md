@@ -9,11 +9,20 @@
 <hr/>
 </div>
 
-Simple program for finding server by pinging	
+# Finding Available IP Addresses Script
+	
 	
 By Sepand Haghighi & Mohammadreza Rezaie		
 
-Version : 1.2.0	
+Version : 1.2
 					
-[Homepage](http://sepandhaghighi.github.io/pyIP/index.html)						
+[Homepage](http://sepandhaghighi.github.io/pyIP/index.html)	
+
+</hr>
+
+- Download and install last version of python3
+- Download pyIP
+- Run
+- Select Search Mode (1-ARP 2-Search)
+- In Search Mode Select Mask and Max-Min Range					
 
