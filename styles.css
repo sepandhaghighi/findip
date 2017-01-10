@@ -1,13 +1,19 @@
 body{
 	
 	
-	background:gray;
-	font-family: monospace;
-	font-size:14px;
+	background:linear-gradient(gray,white);	
+    font-size:14px;
+	font-family: qpage;
+	margin-top: 60px;
+	margin-bottom:60px;
+	margin-right: 60px;
+	margin-left: 60px;
+	border: 10px groove white;
+	padding-top: 10px;
+	padding-bottom: 20px;
+    border-radius: 25px;
+    text-align:center;
 	
-}
-a:hover{
-	background:red;
 }
 .header_light:hover{
 	
@@ -17,4 +23,13 @@ a:hover{
 .header_color{
 	
 	color:purple;
+}
+
+#fork-pc{
+    top: 0;
+    border: 0;
+    left: 0;
+    position: absolute;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
 }
