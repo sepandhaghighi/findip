@@ -6,6 +6,7 @@ import sys # For Exit
 import multiprocessing as mu # for multtiprocessing
 import time
 
+mask = "192.168.1."
 
 def line(number,char="-"):
     response=""
@@ -19,6 +20,7 @@ def ping(i): # ping function
     return output
 def ip_filter(i_list): # This Function Get A List Of IPs and Split IP
     '''((list)->list'''
+    dic = list(string.digits + ".")
     temp_list=[]
     for i in range(len(i_list)):
         for j in range(len(i_list[i])):
@@ -84,45 +86,45 @@ def find(mode="manual",my_ip="0.0.0.0",range_min=0,range_max=254): # This Functi
     log_file.write(line(30, "*") + "\n")
     log_file.close()
 
-if __name__=="__main__":
-    mask="192.168.1."
+def main():
     mu.freeze_support()
-    dic=list(string.digits+".")
+    global mask
     print("Running On Netmask: " + mask)
-    my_ip=socket.gethostbyname(socket.gethostname())
-    if my_ip=="127.0.0.1":
+    my_ip = socket.gethostbyname(socket.gethostname())
+    if my_ip == "127.0.0.1":
         print("Problem In Netwrok Connection ( Please Check )")
         input()
         sys.exit()
-    ssh_test=sub.Popen("ssh",stdout=sub.PIPE,stderr=sub.PIPE,shell=True)
-    ssh_result=str(list(ssh_test.communicate())[1])
-    #print(ssh_result)
-    inp=int(input("Please Choose ARP[1] or Linear Search[2]"))
-    time_1=time.perf_counter()
-    if inp==1:
+    ssh_test = sub.Popen("ssh", stdout=sub.PIPE, stderr=sub.PIPE, shell=True)
+    ssh_result = str(list(ssh_test.communicate())[1])
+    # print(ssh_result)
+    inp = int(input("Please Choose ARP[1] or Linear Search[2]"))
+    time_1 = time.perf_counter()
+    if inp == 1:
         print("Please Wait : Scan IPs . . . ")
-        find(mode="ARP",my_ip=my_ip)
-        time_2=time.perf_counter()
+        find(mode="ARP", my_ip=my_ip)
+        time_2 = time.perf_counter()
     else:
-        get_mask=input("Please Enter Mask :")
+        get_mask = input("Please Enter Mask :")
         try:
-            range_max_input=int(input("Please Enter Range Max : "))
-            range_min_input=int(input("Please Enter Range Min : "))
-        except ValueError: # If User Ignore Input Step
-            range_max_input=0
-            range_min_input=0
+            range_max_input = int(input("Please Enter Range Max : "))
+            range_min_input = int(input("Please Enter Range Min : "))
+        except ValueError:  # If User Ignore Input Step
+            range_max_input = 0
+            range_min_input = 0
         print("Please Wait : Scan IPs . . . ")
-        if get_mask.find("192.")!=-1 and get_mask.find("168.")!=-1:
-            if get_mask[-1]!=".":
-                get_mask=get_mask+"."
-            mask=get_mask
-        if range_max_input>range_min_input and range_max_input<256:
-            find(range_max=range_max_input,range_min=range_min_input)
+        if get_mask.find("192.") != -1 and get_mask.find("168.") != -1:
+            if get_mask[-1] != ".":
+                get_mask = get_mask + "."
+            mask = get_mask
+        if range_max_input > range_min_input and range_max_input < 256:
+            find(range_max=range_max_input, range_min=range_min_input)
         else:
             find()
-        time_2=time.perf_counter()
-    print("Scan Time :",str((time_2-time_1)/60)," min")
+        time_2 = time.perf_counter()
+    print("Scan Time :", str((time_2 - time_1) / 60), " min")
     input("Press Any Key To Exit")
+
                 
         
         
