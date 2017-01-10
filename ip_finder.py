@@ -85,7 +85,7 @@ def find(mode="manual",my_ip="0.0.0.0",range_min=0,range_max=254): # This Functi
     log_file.close()
 
 if __name__=="__main__":
-    mask="192.168.166."
+    mask="192.168.1."
     mu.freeze_support()
     dic=list(string.digits+".")
     print("Running On Netmask: " + mask)
