@@ -24,9 +24,9 @@ By Sepand Haghighi & Mohammadreza Rezaie
 </hr>
 </hr>
 
-- Download and install last version of python3
-- Download pyIP (or pip install pyipfinder)
-- Run
-- Select Search Mode (1-ARP 2-Search)
+- [Download](https://www.python.org/downloads/) and install last version of python3 (or use exe folder and skip this step)
+- Download pyIP [source](https://github.com/sepandhaghighi/pyIP/archive/v1.2.zip) , [exe-file](https://github.com/sepandhaghighi/pyIP/archive/v1.2exe.zip) (or pip install pyipfinder)
+- Run (setup.py/exe)
+- Select Mode (1-ARP 2-Search)
 - In Search Mode Select Mask and Max-Min Range					
 
