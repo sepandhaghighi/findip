@@ -132,8 +132,3 @@ def main():
         time_2 = time.perf_counter()
     print("Scan Time :", str((time_2 - time_1) / 60), " min")
     input("Press Any Key To Exit")
-
-                
-        
-        
-        
