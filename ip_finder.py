@@ -5,9 +5,16 @@ import datetime
 import sys # For Exit
 import multiprocessing as mu # for multtiprocessing
 import time
-
+import os
 mask = "192.168.1."
-
+def logo_handler():
+    if "logo.txt" in os.listdir():
+        with open("logo.txt","r") as logo:
+            for char_line in logo:
+                print(char_line.rstrip())
+        print(line(70,"*"))
+        print("Visit : "+"http://github.com/sepandhaghighi/findip")
+        print(line(70, "*"))
 def line(number,char="-"):
     response=""
     i=0
@@ -104,6 +111,7 @@ def set_range():
     else:
         find()
 def main():
+    logo_handler()
     mu.freeze_support()
     global mask
     print("Running On Netmask: " + mask)
