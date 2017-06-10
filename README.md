@@ -36,3 +36,8 @@ By Sepand Haghighi & Mohammadreza Rezaie
 - Select Mode (1-ARP 2-Search)
 - In Search Mode Select Mask and Max-Min Range					
 
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/sepandhaghighi/findip/badge.svg?style=beer-square)](https://beerpay.io/sepandhaghighi/findip)  [![Beerpay](https://beerpay.io/sepandhaghighi/findip/make-wish.svg?style=flat-square)](https://beerpay.io/sepandhaghighi/findip?focus=wish)
