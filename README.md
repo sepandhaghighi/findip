@@ -43,7 +43,13 @@ By Sepand Haghighi & Mohammadreza Rezaie
 Hey dude! Help me out for a couple of :beers:!			
 
 
-[![Beerpay](https://beerpay.io/sepandhaghighi/findip/badge.svg?style=beer-square)](https://beerpay.io/sepandhaghighi/findip)  [![Beerpay](https://beerpay.io/sepandhaghighi/findip/make-wish.svg?style=flat-square)](https://beerpay.io/sepandhaghighi/findip?focus=wish)			
+[![Beerpay](https://beerpay.io/sepandhaghighi/findip/badge.svg?style=beer-square)](https://beerpay.io/sepandhaghighi/findip)  [![Beerpay](https://beerpay.io/sepandhaghighi/findip/make-wish.svg?style=flat-square)](https://beerpay.io/sepandhaghighi/findip?focus=wish)						
+
+<h3>Bitcoin :</h3>					
+
+```1XGr9qbZjBpUQJJSB6WtgBQbDTgrhPLPA```			
+
+	
 
 <h3>Payping (For Iranian citizens) :</h3>
 
